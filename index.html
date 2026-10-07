@@ -222,7 +222,7 @@ function askSimpan(){ask('Simpan data jurnal trading sekarang?',()=>{save();msg(
 function askHapus(){ask('Hapus data jurnal trading (semua trade serta deposit/penarikan) pada akun ini?',()=>{ask('Anda yakin akan menghapus data?',()=>{const a=A();a.trades=[];a.tx=[];save();r();msg('Data jurnal trading berhasil dihapus.')},'Ya','Tidak')},'Ya','Tidak')}
 async function expXLSX(){if(typeof XLSX==='undefined'){msg('Pustaka Excel belum siap, coba lagi sebentar.');return}
  let dl=null;try{dl=(window.claude&&claude.use)?await claude.use('downloads'):null}catch(e){dl=null}
- if(!dl){msg('Download file hanya bisa dilakukan saat artifact ini dibuka langsung di tab browser sendiri (bukan di dalam pratinjau obrolan). Buka link dashboard ini di tab baru, lalu coba Export Excel lagi.');return}
+ if(!dl)dl={save:async({filename,data})=>{const u=URL.createObjectURL(data),l=document.createElement('a');l.href=u;l.download=filename;document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),5000)}};
  const a=A();
  const wsA=XLSX.utils.json_to_sheet([{Nama:a.name,ModalAwal:a.start,TargetHarian:a.goals.hari||0,TargetMingguan:a.goals.minggu||0,TargetBulanan:a.goals.bulan||0,TargetTahunan:a.goals.tahun||0}]);
  const wsT=XLSX.utils.json_to_sheet(srt(a.trades).slice().reverse().map(t=>({Tanggal:t.date,Waktu:t.time||'',Instrumen:t.inst,Arah:t.side,'P&L':t.pnl})));
